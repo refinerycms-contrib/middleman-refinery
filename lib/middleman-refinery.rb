@@ -1,15 +1,15 @@
-require 'prismic'
-require 'middleman-prismic/version'
-require 'middleman-prismic/commands/prismic'
+require 'refinery/api'
+require 'middleman-refinery/version'
+require 'middleman-refinery/commands/refinery'
 
-module MiddlemanPrismic
+module MiddlemanRefinery
   class << self
     attr_reader :options
   end
 
   class Core < Middleman::Extension
 
-    option :api_url, nil, 'The prismic api url'
+    option :api_url, nil, 'The Refinery CMS API url'
     option :release, 'master', 'Content release'
     option(
       :link_resolver,
@@ -21,20 +21,20 @@ module MiddlemanPrismic
     def initialize(app, options_hash={}, &block)
       super
 
-      MiddlemanPrismic.instance_variable_set('@options', options)
+      MiddlemanRefinery.instance_variable_set('@options', options)
     end
 
     helpers do
-      Dir["data/prismic_*"].each do |file|
-        define_method(file.gsub('data/prismic_','')) do
+      Dir["data/refinery_*"].each do |file|
+        define_method(file.gsub('data/refinery_','')) do
           YAML::load(File.read(file)).values
         end
       end
 
       def reference
-        ref = YAML::load(File.read('data/prismic_reference'))
+        ref = YAML::load(File.read('data/refinery_reference'))
         ref.class.send(
-          :define_method, :link_to, MiddlemanPrismic.options.link_resolver
+          :define_method, :link_to, MiddlemanRefinery.options.link_resolver
         )
 
         return ref
@@ -44,4 +44,4 @@ module MiddlemanPrismic
 
 end
 
-::Middleman::Extensions.register(:prismic, MiddlemanPrismic::Core)
+::Middleman::Extensions.register(:refinery, MiddlemanRefinery::Core)

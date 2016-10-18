@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe MiddlemanPrismic do
+describe MiddlemanRefinery do
   it 'has a version number' do
-    expect(MiddlemanPrismic::VERSION).not_to be nil
+    expect(MiddlemanRefinery::VERSION).not_to be nil
   end
 
   it 'does something useful' do
