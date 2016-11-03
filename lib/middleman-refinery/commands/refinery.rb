@@ -38,10 +38,10 @@ module Middleman
 
         FileUtils.rm_rf(Dir.glob('data/refinery_*'))
 
-          conf.api_token = "123"
         ::Refinery::API.configure do |conf|
-          conf.api_url = "http://localhost:3000"
-          conf.api_path = "/api/v1"
+          conf.api_token = MiddlemanRefinery.options.api_token
+          conf.api_url = MiddlemanRefinery.options.api_url
+          conf.api_path = MiddlemanRefinery.options.api_path
         end
 
         # api = ::Refinery::API.configure(MiddlemanRefinery.options.api_url)
