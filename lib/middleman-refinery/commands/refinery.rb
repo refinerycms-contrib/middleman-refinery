@@ -38,8 +38,8 @@ module Middleman
 
         FileUtils.rm_rf(Dir.glob('data/refinery_*'))
 
-        Refinery::API.configure do |conf|
           conf.api_token = "123"
+        ::Refinery::API.configure do |conf|
           conf.api_url = "http://localhost:3000"
           conf.api_path = "/api/v1"
         end
@@ -47,11 +47,18 @@ module Middleman
         # api = ::Refinery::API.configure(MiddlemanRefinery.options.api_url)
         # response = api.form('everything').submit(api.ref(reference))
 
-        client = Refinery::API::Pages.new
+        client = ::Refinery::API::Pages.new
         pages = client.index.body
 
         File.open('data/refinery_page.yml', 'w') do |f|
           f.write(JSON.parse(pages).to_yaml)
+        end
+
+        client = ::Refinery::API::Blog::Posts.new
+        posts = client.index.body
+
+        File.open('data/refinery_blog_post.yml', 'w') do |f|
+          f.write(JSON.parse(posts).to_yaml)
         end
 
         Middleman::Cli::Build.new.build if options[:rebuild]
