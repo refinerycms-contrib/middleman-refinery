@@ -3,7 +3,6 @@ require 'middleman-cli'
 require 'yaml'
 require 'json'
 require 'fileutils'
-require 'pry'
 
 module Middleman
   module Cli
