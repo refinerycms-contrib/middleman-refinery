@@ -3,6 +3,7 @@ require 'middleman-cli'
 require 'yaml'
 require 'json'
 require 'fileutils'
+require 'logger'
 
 module Middleman
   module Cli
@@ -78,6 +79,12 @@ module Middleman
         #     f.write(Hash[[*response.map.with_index]].invert.to_yaml)
         #   end
         # end
+      end
+
+      private
+
+      def logger
+        ::Middleman::Logger.singleton
       end
 
       Base.register(self, 'refinery', 'refinery [--rebuild]', 'Import Refinery data to your Data folder')
