@@ -5,7 +5,7 @@ require 'middleman-refinery/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "middleman-refinery"
-  spec.version       = Middlemanrefinery::VERSION
+  spec.version       = MiddlemanRefinery::VERSION
   spec.authors       = ["Brice Sanchez", "Filippos Vasilakis"]
 
   spec.summary       = %q{Middleman extension for Refinery CMS}
