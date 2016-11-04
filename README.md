@@ -40,6 +40,10 @@ activate :refinery do |f|
   f.release = 'master'
   f.link_resolver = ->(link) { binding.pry; "#{link.type.pluralize}/#{link.slug}"}
   f.custom_queries = { test: [Refinery::Predicates::at('document.type', 'product')] }
+  f.content_types = [
+    { content_type: 'Blog::Posts', destination: 'source/data' },
+    { content_type: 'Pages' }
+  ]
 end
 ```
 

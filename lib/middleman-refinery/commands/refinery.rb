@@ -4,6 +4,7 @@ require 'yaml'
 require 'json'
 require 'fileutils'
 require 'logger'
+require 'pry'
 
 module Middleman
   module Cli
@@ -47,18 +48,24 @@ module Middleman
         # api = ::Refinery::API.configure(MiddlemanRefinery.options.api_url)
         # response = api.form('everything').submit(api.ref(reference))
 
-        client = ::Refinery::API::Pages.new
-        pages = client.index.body
 
-        File.open('data/refinery_page.yml', 'w') do |f|
-          f.write(JSON.parse(pages).to_yaml)
-        end
+        options.content_types.each do |ct|
+          content = eval("::Refinery::API::#{ct[:content_type]}.new")
+          content_body = content.index.body
 
-        client = ::Refinery::API::Blog::Posts.new
-        posts = client.index.body
+          content_type_param = ct[:content_type].parameterize
+          destination = "#{ct[:destination] || 'data'}/#{ct[:content_type].parameterize}"
+          FileUtils.mkdir_p destination
 
-        File.open('data/refinery_blog_post.yml', 'w') do |f|
-          f.write(JSON.parse(posts).to_yaml)
+          JSON.parse(content_body)[content_type_param].each do |content|
+            File.open("#{destination}/#{content["id"]}.yml", 'w') do |f|
+              f.write(content.to_yaml)
+            end
+          end
+
+          File.open("#{ct[:destination] || 'data'}/#{content_type_param}.yml", 'w') do |f|
+            f.write(JSON.parse(content_body).to_yaml)
+          end
         end
 
         Middleman::Cli::Build.new.build if options[:rebuild]

@@ -11,6 +11,7 @@ module MiddlemanRefinery
     option :api_token, nil, 'The Refinery CMS API token'
     option :api_url, nil, 'The Refinery CMS API url'
     option :api_path, '/api/v1', 'The Refinery CMS API path'
+    option :content_types, [], 'Content types'
     option :release, 'master', 'Content release'
     option(
       :link_resolver,
