@@ -1,9 +1,7 @@
 require 'middleman-cli'
-
 require 'yaml'
 require 'json'
 require 'fileutils'
-require 'logger'
 require 'pry'
 
 module Middleman
@@ -11,6 +9,7 @@ module Middleman
 
     class Refinery < Thor::Group
       include Thor::Actions
+      include ::MiddlemanRefinery::Status
 
       # Path where Middleman expects the local data to be stored
       MIDDLEMAN_LOCAL_DATA_FOLDER = 'data'
@@ -69,7 +68,7 @@ module Middleman
         end
 
         Middleman::Cli::Build.new.build if options[:rebuild]
-        logger.info 'Refinery content import: Done!'
+        say_status 'Refinery content import: Done!'
 
         # available_documents = []
         # response.each {|d| available_documents << d.type}
@@ -96,10 +95,6 @@ module Middleman
       end
 
       private
-
-      def logger
-        ::Middleman::Logger.singleton
-      end
 
       def options
         MiddlemanRefinery.options

@@ -1,5 +1,6 @@
 require 'refinery/api'
 require 'middleman-refinery/version'
+require 'middleman-refinery/status'
 require 'middleman-refinery/commands/refinery'
 
 module MiddlemanRefinery
