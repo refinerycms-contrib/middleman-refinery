@@ -25,7 +25,8 @@ To configure the extension, add the following configuration block to Middleman's
 Parameter     |i Description
 ----------    |------------
 api_url       | the single endpoint of your content repository
-access_token  | Refinery API OAuth2 based access token (optional)
+api_token     | Refinery API OAuth2 based access token (optional)
+api_path      | Refinery API path (optional)
 release       | The content release (optional, defaults to `master`)
 link_resolver | A link resolver. Expects a proc with one param, which is an object of type [Refinery::Fragments::DocumentLink](http://www.rubydoc.info/github/refinery/ruby-kit/master/Refinery/Fragments/DocumentLink) (optional)
 
@@ -34,6 +35,8 @@ For instance:
 ```ruby
 activate :refinery do |f|
   f.api_url = 'https://testrepositorymiddleman.refinery.io/api'
+  f.api_token = '123'
+  f.api_path = '/api/v1'
   f.release = 'master'
   f.link_resolver = ->(link) { binding.pry; "#{link.type.pluralize}/#{link.slug}"}
   f.custom_queries = { test: [Refinery::Predicates::at('document.type', 'product')] }
