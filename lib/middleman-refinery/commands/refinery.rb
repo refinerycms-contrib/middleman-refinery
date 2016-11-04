@@ -32,16 +32,16 @@ module Middleman
       def refinery
         ::Middleman::Application.new
 
-        reference = MiddlemanRefinery.options.release
+        reference = options.release
 
         Dir.mkdir('data') unless File.exists?('data')
 
         FileUtils.rm_rf(Dir.glob('data/refinery_*'))
 
         ::Refinery::API.configure do |conf|
-          conf.api_token = MiddlemanRefinery.options.api_token
-          conf.api_url = MiddlemanRefinery.options.api_url
-          conf.api_path = MiddlemanRefinery.options.api_path
+          conf.api_token = options.api_token
+          conf.api_url = options.api_url
+          conf.api_path = options.api_path
         end
 
         # api = ::Refinery::API.configure(MiddlemanRefinery.options.api_url)
@@ -92,6 +92,10 @@ module Middleman
 
       def logger
         ::Middleman::Logger.singleton
+      end
+
+      def options
+        MiddlemanRefinery.options
       end
 
       Base.register(self, 'refinery', 'refinery [--rebuild]', 'Import Refinery data to your Data folder')
