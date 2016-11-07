@@ -37,12 +37,12 @@ module Middleman
         FileUtils.rm_rf(Dir.glob('data/refinery_*'))
 
         ::Refinery::API.configure do |conf|
-          conf.api_token = options.api_token
-          conf.api_url = options.api_url
-          conf.api_path = options.api_path
+          conf.api_token = configs.api_token
+          conf.api_url = configs.api_url
+          conf.api_path = configs.api_path
         end
 
-        options.content_types.each do |ct|
+        configs.content_types.each do |ct|
           content = eval("::Refinery::API::#{ct[:content_type]}.new")
           content_index_body = JSON.parse(content.index.body)
           content_type_param = ct[:content_type].parameterize
@@ -78,7 +78,7 @@ module Middleman
 
       private
 
-      def options
+      def configs
         MiddlemanRefinery.options
       end
 
