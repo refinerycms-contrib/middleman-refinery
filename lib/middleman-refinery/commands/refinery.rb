@@ -3,6 +3,7 @@ require 'yaml'
 require 'json'
 require 'date'
 require 'fileutils'
+require 'pry'
 
 module Middleman
   module Cli
@@ -32,10 +33,6 @@ module Middleman
       def refinery
         ::Middleman::Application.new
 
-        Dir.mkdir('data') unless File.exists?('data')
-
-        FileUtils.rm_rf(Dir.glob('data/refinery_*'))
-
         ::Refinery::API.configure do |conf|
           conf.api_token = configs.api_token
           conf.api_url = configs.api_url
@@ -46,15 +43,15 @@ module Middleman
           content = eval("::Refinery::API::#{ct[:content_type]}.new")
           content_index_body = JSON.parse(content.index.body)
           content_type_param = ct[:content_type].parameterize
-          destination = "#{ct[:destination] || 'data'}/#{content_type_param}"
+          destination = "#{ct[:destination] || 'data'}/refinery/#{content_type_param}"
           format = ct[:format] || '.yml'
           node = ct[:node]
 
           if content_index_body.has_key?("error")
             say_status "Skip: `#{content_index_body}`" 
           else
-           
-            FileUtils.mkdir_p destination
+            FileUtils.mkdir_p destination unless File.exists?(destination)
+            FileUtils.rm_rf(Dir.glob("#{destination}/*"))
 
             content_index_body[node].each do |content|
               if node == 'posts'
