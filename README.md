@@ -6,7 +6,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'middleman-refinery'
+gem 'middleman-refinery' git: 'https://github.com/refinerycms-contrib/middleman-refinery', branch: 'master'
 ```
 
 And then execute:
@@ -16,50 +16,44 @@ And then execute:
 Or install it yourself as:
 
     $ gem install middleman-refinery
-i
+
 ## Configuration
 
 To configure the extension, add the following configuration block to Middleman's config.rb:
 
 
-Parameter     |i Description
+Parameter     | Description
 ----------    |------------
 api_url       | the single endpoint of your content repository
 api_token     | Refinery API OAuth2 based access token (optional)
 api_path      | Refinery API path (optional)
-release       | The content release (optional, defaults to `master`)
-link_resolver | A link resolver. Expects a proc with one param, which is an object of type [Refinery::Fragments::DocumentLink](http://www.rubydoc.info/github/refinery/ruby-kit/master/Refinery/Fragments/DocumentLink) (optional)
+content_types | Content type configuration
 
 For instance:
 
 ```ruby
 activate :refinery do |f|
-  f.api_url = 'https://testrepositorymiddleman.refinery.io/api'
-  f.api_token = '123'
-  f.api_path = '/api/v1'
-  f.release = 'master'
-  f.link_resolver = ->(link) { binding.pry; "#{link.type.pluralize}/#{link.slug}"}
-  f.custom_queries = { test: [Refinery::Predicates::at('document.type', 'product')] }
+  f.api_url = 'http://localhost:3000/'
+  f.api_token = ENV['REFINERY_API_TOKEN']
   f.content_types = [
-    { content_type: 'Blog::Posts', destination: 'source/data' },
+    { 
+      content_type: 'Blog::Posts', 
+      node: 'posts', 
+      destination: 'source/blog/data', 
+      format: '.html.md',
+      mapper: MiddlemanRefinery::BlogPostMapper 
+    },
     { content_type: 'Pages' }
   ]
 end
 ```
 
 ## Usage
-Run `bundle exec middleman refinery` in your terminal. This will fetch entries for the configured
-spaces and content types and put the resulting data in the [local data folder](https://middlemanapp.com/advanced/local-data/) as yaml files.
 
-For each document mask you have, you will get a file named `refinery_{document-name}` under `/data`.
-So for instance if you have article and product document masks, you will get 2 files: `refinery_articles`, `refinery_products`.
-Each file will contain all your documents of the specified document mask in an array.
+Run `bundle exec middleman refinery --rebuild` in your terminal. 
 
+This will fetch entries for the configured content types and put the resulting data in the specified `destination` folder or [local data folder](https://middlemanapp.com/advanced/local-data/) as yaml files or other `format`s. Finally, it will rebuild the middleman website.
 
-In your templates, you get for free helper methods named after your document mask that return the Refinery equivelant object.
-For instance for articles, if you run `<%= articles %>` you get back a `Refinery::Document`.
-
-If at any time need access to `Refinery::Ref` you can do it using the `reference` helper.
 
 ## Development
 
