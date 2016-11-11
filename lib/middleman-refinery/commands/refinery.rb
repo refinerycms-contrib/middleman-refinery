@@ -40,30 +40,34 @@ module Middleman
         end
 
         configs.content_types.each do |ct|
-          content = eval("::Refinery::API::#{ct[:content_type]}.new")
-          content_index_body = JSON.parse(content.index.body)
+          client = eval("::Refinery::API::#{ct[:content_type]}.new")
+          client_index_body = JSON.parse(client.index.body)
           content_type_param = ct[:content_type].parameterize
           destination = "#{ct[:destination] || 'data'}/refinery/#{content_type_param}"
           format = ct[:format] || '.yml'
           node = ct[:node]
 
-          if content_index_body.has_key?("error")
-            say_status "Skip: `#{content_index_body}`" 
+          if client_index_body.has_key?("error")
+            say_status "Skip: `#{client_index_body}`" 
           else
             FileUtils.mkdir_p destination unless File.exists?(destination)
             FileUtils.rm_rf(Dir.glob("#{destination}/*"))
 
-            content_index_body[node].each do |content|
-              if node == 'posts'
-                content = MiddlemanRefinery::BlogPostMapper.map(content)
-                date = Date.strptime(content[:date], '%Y-%m-%d')
-                filename = "#{date}-#{content[:url]}#{format}"
-              else
-                filename = "#{content[:url].parameterize}#{format}"
-              end
+            client_index_body[node].each do |client_index|
+              content = JSON.parse(client.show(id: client_index["id"]).body)
               
-              File.open("#{destination}/#{filename}", 'w') do |f|
-                f.write(content.to_yaml + ("---" if format == '.html.md') )
+              if content
+                if node == 'posts'
+                  content = MiddlemanRefinery::BlogPostMapper.map(content)
+                  date = Date.strptime(content["date"], '%Y-%m-%d')
+                  filename = "#{date}-#{content["url"]}#{format}"
+                else
+                  filename = "#{content["url"].parameterize}#{format}"
+                end
+                
+                File.open("#{destination}/#{filename}", 'w') do |f|
+                  f.write(content.to_yaml + ("---" if format == '.html.md') )
+                end
               end
             end
           end
