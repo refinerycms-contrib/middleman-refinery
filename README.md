@@ -33,7 +33,7 @@ For instance:
 
 ```ruby
 activate :refinery do |f|
-  f.api_url = 'http://localhost:3000/'
+  f.api_url = 'http://localhost:3000'
   f.api_token = ENV['REFINERY_API_TOKEN']
   f.content_types = [
     { 
