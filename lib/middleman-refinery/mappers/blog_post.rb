@@ -1,3 +1,5 @@
+require 'date'
+
 module MiddlemanRefinery
   class BlogPostMapper
     class << self
@@ -5,11 +7,12 @@ module MiddlemanRefinery
         id = entry.delete("id")
         title = entry.delete("title")
         url = title.parameterize
+        date = Date.strptime(entry["published_at"], '%Y-%m-%d').to_s
 
         {
           "title" => title,
           "url" => url,
-          "date" => entry.delete("published_at"),
+          "date" => date,
           "author" => entry.delete("user_id"),
           "tags" => entry.delete("tag_list"),
           "post" => entry.delete("body"),
